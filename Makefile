@@ -1,13 +1,16 @@
 include .env
 
 migrate-up:
-	migrate -path db/migration -database "postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DB}?sslmode=disable" -verbose up
+	migrate -path db/migration -database ${DB_URL} -verbose up
 
 migrate-down:
-	migrate -path db/migration -database "postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DB}?sslmode=disable" -verbose down
+	migrate -path db/migration -database ${DB_URL} -verbose down
 
 sqlc:
 	sqlc generate
+
+test:
+	go test -v -cover ./...
 
 tidy:
 	go mod tidy
