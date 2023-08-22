@@ -7,5 +7,5 @@ COPY . .
 FROM alpine:3.18
 WORKDIR /db
 COPY db/migration ./db/migration
-COPY .env.template .env
-COPY app.env.template ./app.env
+COPY .env .
+COPY app.env .
