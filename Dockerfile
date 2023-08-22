@@ -1,17 +1,11 @@
 # Build stage
 FROM golang:1.21-alpine3.18 AS builder
-WORKDIR /app
+WORKDIR /db
 COPY . .
-RUN go build -o main main.go
 
 # Run stage
 FROM alpine:3.18
-WORKDIR /app
-COPY --from=builder /app/main .
+WORKDIR /db
 COPY db/migration ./db/migration
-COPY .env.template ./.env
-COPY app.env .
-
-EXPOSE 8080
-CMD [ "/app/main" ]
-ENTRYPOINT [ "/app/start.sh" ]
+COPY .env.template .env
+COPY app.env.template ./app.env
