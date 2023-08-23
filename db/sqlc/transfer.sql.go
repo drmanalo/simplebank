@@ -11,22 +11,22 @@ import (
 
 const createTransfer = `-- name: CreateTransfer :one
 INSERT INTO transfers (
+  amount,
   from_account_id,
-  to_account_id,
-  amount
+  to_account_id
 ) VALUES (
   $1, $2, $3
 ) RETURNING id, from_account_id, to_account_id, amount, created_at
 `
 
 type CreateTransferParams struct {
+	Amount        int64 `json:"amount"`
 	FromAccountID int64 `json:"from_account_id"`
 	ToAccountID   int64 `json:"to_account_id"`
-	Amount        int64 `json:"amount"`
 }
 
 func (q *Queries) CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfer, error) {
-	row := q.db.QueryRow(ctx, createTransfer, arg.FromAccountID, arg.ToAccountID, arg.Amount)
+	row := q.db.QueryRow(ctx, createTransfer, arg.Amount, arg.FromAccountID, arg.ToAccountID)
 	var i Transfer
 	err := row.Scan(
 		&i.ID,
@@ -84,7 +84,7 @@ func (q *Queries) ListTransfers(ctx context.Context, arg ListTransfersParams) ([
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Transfer
+	items := []Transfer{}
 	for rows.Next() {
 		var i Transfer
 		if err := rows.Scan(
