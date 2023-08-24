@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
-	"github.com/drmanalo/simple_bank/api"
-	db "github.com/drmanalo/simple_bank/db/sqlc"
-	"github.com/drmanalo/simple_bank/util"
+	"github.com/drmanalo/simplebank/api"
+	db "github.com/drmanalo/simplebank/db/sqlc"
+	"github.com/drmanalo/simplebank/util"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog"

@@ -1,9 +1,10 @@
-module github.com/drmanalo/simple_bank
+module github.com/drmanalo/simplebank
 
 go 1.21.0
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/golang/mock v1.6.0
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/lib/pq v1.10.9
 	github.com/rs/zerolog v1.30.0
