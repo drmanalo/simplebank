@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -10,6 +11,11 @@ const alphabet = "abcedfghijklmnopqrstuvwxyz"
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
+}
+
+// RandomEmail generates a random email
+func RandomEmail() string {
+	return fmt.Sprintf("%s@email.com", RandomString(6))
 }
 
 // RandomInt generates a random integer between min and max
