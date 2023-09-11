@@ -15,7 +15,7 @@ import (
 	"github.com/drmanalo/simplebank/util"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateAccountAPI(t *testing.T) {
@@ -45,8 +45,8 @@ func TestCreateAccountAPI(t *testing.T) {
 					Return(account, nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusCreated, recorder.Code)
-				requireBodyMatchAccount(t, recorder.Body, account)
+				assert.Equal(t, http.StatusCreated, recorder.Code)
+				assertBodyMatchAccount(t, recorder.Body, account)
 			},
 		},
 		{
@@ -66,7 +66,7 @@ func TestCreateAccountAPI(t *testing.T) {
 					Times(0)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusBadRequest, recorder.Code)
+				assert.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 		{
@@ -87,7 +87,7 @@ func TestCreateAccountAPI(t *testing.T) {
 					Return(db.Account{}, sql.ErrConnDone)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+				assert.Equal(t, http.StatusInternalServerError, recorder.Code)
 			},
 		},
 	}
@@ -106,11 +106,11 @@ func TestCreateAccountAPI(t *testing.T) {
 			recorder := httptest.NewRecorder()
 
 			data, err := json.Marshal(tc.body)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			url := "/accounts"
 			request, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(data))
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			server.router.ServeHTTP(recorder, request)
 			tc.checkResponse(recorder)
@@ -137,8 +137,8 @@ func TestGetAccountAPI(t *testing.T) {
 					Return(account, nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusOK, recorder.Code)
-				requireBodyMatchAccount(t, recorder.Body, account)
+				assert.Equal(t, http.StatusOK, recorder.Code)
+				assertBodyMatchAccount(t, recorder.Body, account)
 			},
 		},
 		{
@@ -151,7 +151,7 @@ func TestGetAccountAPI(t *testing.T) {
 					Return(db.Account{}, db.ErrRecordNotFound)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusNotFound, recorder.Code)
+				assert.Equal(t, http.StatusNotFound, recorder.Code)
 			},
 		},
 		{
@@ -164,7 +164,7 @@ func TestGetAccountAPI(t *testing.T) {
 					Return(db.Account{}, sql.ErrConnDone)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+				assert.Equal(t, http.StatusInternalServerError, recorder.Code)
 			},
 		},
 		{
@@ -176,7 +176,7 @@ func TestGetAccountAPI(t *testing.T) {
 					Times(0)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusBadRequest, recorder.Code)
+				assert.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 	}
@@ -196,7 +196,7 @@ func TestGetAccountAPI(t *testing.T) {
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
 			request, err := http.NewRequest(http.MethodGet, url, nil)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			server.router.ServeHTTP(recorder, request)
 			tc.checkResponse(recorder)
@@ -239,8 +239,8 @@ func TestListAccountAPI(t *testing.T) {
 					Return(accounts, nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusOK, recorder.Code)
-				requireBodyMatchAccounts(t, recorder.Body, accounts)
+				assert.Equal(t, http.StatusOK, recorder.Code)
+				assertBodyMatchAccounts(t, recorder.Body, accounts)
 			},
 		},
 		{
@@ -259,7 +259,7 @@ func TestListAccountAPI(t *testing.T) {
 					Times(0)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusBadRequest, recorder.Code)
+				assert.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 		{
@@ -278,7 +278,7 @@ func TestListAccountAPI(t *testing.T) {
 					Times(0)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusBadRequest, recorder.Code)
+				assert.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
 		{
@@ -298,7 +298,7 @@ func TestListAccountAPI(t *testing.T) {
 					Return([]db.Account{}, sql.ErrConnDone)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+				assert.Equal(t, http.StatusInternalServerError, recorder.Code)
 			},
 		},
 	}
@@ -318,7 +318,7 @@ func TestListAccountAPI(t *testing.T) {
 
 			url := "/accounts"
 			request, err := http.NewRequest(http.MethodGet, url, nil)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			// Add query parameters to the request URL
 			q := request.URL.Query()
@@ -341,22 +341,22 @@ func randomAccount() db.Account {
 	}
 }
 
-func requireBodyMatchAccount(t *testing.T, body *bytes.Buffer, account db.Account) {
+func assertBodyMatchAccount(t *testing.T, body *bytes.Buffer, account db.Account) {
 	data, err := io.ReadAll(body)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	var gotAccount db.Account
 	err = json.Unmarshal(data, &gotAccount)
-	require.NoError(t, err)
-	require.Equal(t, account, gotAccount)
+	assert.NoError(t, err)
+	assert.Equal(t, account, gotAccount)
 }
 
-func requireBodyMatchAccounts(t *testing.T, body *bytes.Buffer, accounts []db.Account) {
+func assertBodyMatchAccounts(t *testing.T, body *bytes.Buffer, accounts []db.Account) {
 	data, err := io.ReadAll(body)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	var gotAccounts []db.Account
 	err = json.Unmarshal(data, &gotAccounts)
-	require.NoError(t, err)
-	require.Equal(t, accounts, gotAccounts)
+	assert.NoError(t, err)
+	assert.Equal(t, accounts, gotAccounts)
 }

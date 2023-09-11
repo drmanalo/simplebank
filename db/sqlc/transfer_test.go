@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/drmanalo/simplebank/util"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func createRandomTransfer(t *testing.T, account1, account2 Account) Transfer {
@@ -17,15 +17,15 @@ func createRandomTransfer(t *testing.T, account1, account2 Account) Transfer {
 	}
 
 	transfer, err := testStore.CreateTransfer(context.Background(), arg)
-	require.NoError(t, err)
-	require.NotEmpty(t, transfer)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, transfer)
 
-	require.Equal(t, arg.FromAccountID, transfer.FromAccountID)
-	require.Equal(t, arg.ToAccountID, transfer.ToAccountID)
-	require.Equal(t, arg.Amount, transfer.Amount)
+	assert.Equal(t, arg.FromAccountID, transfer.FromAccountID)
+	assert.Equal(t, arg.ToAccountID, transfer.ToAccountID)
+	assert.Equal(t, arg.Amount, transfer.Amount)
 
-	require.NotZero(t, transfer.ID)
-	require.NotZero(t, transfer.CreatedAt)
+	assert.NotZero(t, transfer.ID)
+	assert.NotZero(t, transfer.CreatedAt)
 
 	return transfer
 }
@@ -42,14 +42,14 @@ func TestGetTransfer(t *testing.T) {
 	transfer1 := createRandomTransfer(t, account1, account2)
 
 	transfer2, err := testStore.GetTransfer(context.Background(), transfer1.ID)
-	require.NoError(t, err)
-	require.NotEmpty(t, transfer2)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, transfer2)
 
-	require.Equal(t, transfer1.ID, transfer2.ID)
-	require.Equal(t, transfer1.FromAccountID, transfer2.FromAccountID)
-	require.Equal(t, transfer1.ToAccountID, transfer2.ToAccountID)
-	require.Equal(t, transfer1.Amount, transfer2.Amount)
-	require.WithinDuration(t, transfer1.CreatedAt.Time, transfer2.CreatedAt.Time, time.Second)
+	assert.Equal(t, transfer1.ID, transfer2.ID)
+	assert.Equal(t, transfer1.FromAccountID, transfer2.FromAccountID)
+	assert.Equal(t, transfer1.ToAccountID, transfer2.ToAccountID)
+	assert.Equal(t, transfer1.Amount, transfer2.Amount)
+	assert.WithinDuration(t, transfer1.CreatedAt.Time, transfer2.CreatedAt.Time, time.Second)
 }
 
 func TestListTrans(t *testing.T) {
@@ -69,11 +69,11 @@ func TestListTrans(t *testing.T) {
 	}
 
 	transfers, err := testStore.ListTransfers(context.Background(), arg)
-	require.NoError(t, err)
-	require.Len(t, transfers, 5)
+	assert.NoError(t, err)
+	assert.Len(t, transfers, 5)
 
 	for _, transfer := range transfers {
-		require.NotEmpty(t, transfer)
-		require.True(t, transfer.FromAccountID == account1.ID || transfer.ToAccountID == account1.ID)
+		assert.NotEmpty(t, transfer)
+		assert.True(t, transfer.FromAccountID == account1.ID || transfer.ToAccountID == account1.ID)
 	}
 }
